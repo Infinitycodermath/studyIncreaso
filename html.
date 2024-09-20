@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Storage and Study Time Calculation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        label, input {
+            font-size: 16px;
+            margin: 10px 0;
+            display: block;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        .result {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Study Time Calculator</h1>
+
+    <label for="inputChoice">Enter Choice (p, s, r, up, us, ur):</label>
+    <input type="text" id="inputChoice" placeholder="Enter p, s, r, up, us, ur" />
+
+    <label for="studyField">Enter Study Information:</label>
+    <input type="text" id="studyField" placeholder="Enter the study information"/>
+
+    <button onclick="storeData()">Save and Calculate</button>
+
+    <p class="result" id="result"></p>
+
+    <script>
+        // Function to store data and calculate the date to show the study
+        function storeData() {
+            const inputChoice = document.getElementById('inputChoice').value.trim().toLowerCase();
+            const studyInfo = document.getElementById('studyField').value.trim();
+            const result = document.getElementById('result');
+
+            if (studyInfo === '') {
+                result.textContent = "Please enter study information.";
+                return;
+            }
+
+            let daysToShow;
+
+            // Checking the input and assigning the number of days
+            switch (inputChoice) {
+                case 'p':
+                    daysToShow = 7;
+                    break;
+                case 's':
+                    daysToShow = 3;
+                    break;
+                case 'r':
+                    daysToShow = 5;
+                    break;
+                case 'up':
+                    daysToShow = 17;
+                    break;
+                case 'us':
+                    daysToShow = 13;
+                    break;
+                case 'ur':
+                    daysToShow = 15;
+                    break;
+                default:
+                    result.textContent = "Invalid choice. Please enter p, s, r, up, us, or ur.";
+                    return;
+            }
+
+            // Storing the data locally
+            localStorage.setItem('studyInfo', studyInfo);
+            localStorage.setItem('daysToShow', daysToShow);
+
+            // Calculate the display date
+            const currentDate = new Date();
+            currentDate.setDate(currentDate.getDate() + daysToShow);
+
+            result.textContent = `Study information stored. It will be shown on: ${currentDate.toDateString()}`;
+        }
+
+        // Function to retrieve the data from local storage
+        window.onload = function() {
+            const storedStudyInfo = localStorage.getItem('studyInfo');
+            const storedDaysToShow = localStorage.getItem('daysToShow');
+
+            if (storedStudyInfo && storedDaysToShow) {
+                const result = document.getElementById('result');
+                const currentDate = new Date();
+                const storedDate = new Date();
+                storedDate.setDate(storedDate.getDate() + parseInt(storedDaysToShow));
+
+                if (currentDate >= storedDate) {
+                    result.textContent = `Stored Study Information: ${storedStudyInfo}`;
+                } else {
+                    result.textContent = `No study information to show yet. It will be shown on: ${storedDate.toDateString()}`;
+                }
+            }
+        };
+    </script>
+
+</body>
+</html>
